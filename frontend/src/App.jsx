@@ -9,6 +9,8 @@ import Leave from "./pages/Leave";
 import PaySlip from "./pages/PaySlip";
 import PrintPaySlip from "./pages/PrintPaySlip";
 import Setting from "./pages/Setting";
+import Attendance from "./pages/Attendance.jsx";
+
 import LoginForm from "./components/LoginForm.jsx";
 
 function App() {
@@ -43,6 +45,8 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/employees" element={<Employee />} />
           <Route path="/leave" element={<Leave />} />
+          <Route path="/attendance" element={<Attendance />} />
+
           <Route path="/payslip" element={<PaySlip />} />
           <Route path="/setting" element={<Setting />} />
         </Route>

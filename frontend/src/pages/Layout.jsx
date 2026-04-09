@@ -1,6 +1,16 @@
 import { useState } from "react";
 import { Outlet } from "react-router-dom";
-import { LayoutDashboard, LogOut, Menu, User, X } from "lucide-react";
+import {
+  BadgeDollarSign,
+  FilePenLine,
+  LayoutDashboard,
+  LogOut,
+  Menu,
+  Settings,
+  User,
+  User2,
+  X,
+} from "lucide-react";
 
 const Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -9,31 +19,66 @@ const Layout = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
   const name = "koshish";
+  const role = "admin";
+
+  const adminLink = [
+    {
+      name: "Dashboard",
+      icon: <LayoutDashboard className="h-4 w-4" />,
+      href: "/dashboard",
+    },
+    {
+      name: "Employee",
+      icon: <User2 className="h-4 w-4" />,
+      href: "/employees",
+    },
+    {
+      name: "Leave",
+      icon: <LogOut className="h-4 w-4" />,
+      href: "/leave",
+    },
+    {
+      name: "PaySlip",
+      icon: <BadgeDollarSign className="h-4 w-4" />,
+      href: "/payslip",
+    },
+    {
+      name: "Settings",
+      icon: <Settings className="h-4 w-4" />,
+      href: "/setting",
+    },
+  ];
 
   const employeeLink = [
     {
       name: "Dashboard",
       icon: <LayoutDashboard className="h-4 w-4" />,
+      href: "/dashboard",
     },
     {
       name: "Attendance",
-      icon: <LayoutDashboard className="h-4 w-4" />,
+      icon: <FilePenLine className="h-4 w-4" />,
+      href: "/attendance",
     },
     {
       name: "Leave",
-      icon: <LayoutDashboard className="h-4 w-4" />,
+      icon: <LogOut className="h-4 w-4" />,
+      href: "/leave",
     },
     {
       name: "PaySlip",
-      icon: <LayoutDashboard className="h-4 w-4" />,
+      icon: <BadgeDollarSign className="h-4 w-4" />,
+      href: "/payslip",
     },
     {
       name: "Settings",
-      icon: <LayoutDashboard className="h-4 w-4" />,
+      icon: <Settings className="h-4 w-4" />,
+      href: "/setting",
     },
   ];
 
   const pathname = window.location.pathname;
+  const navLinks = role === "admin" ? adminLink : employeeLink;
 
   return (
     <div className="flex h-screen relative">
@@ -96,10 +141,11 @@ const Layout = () => {
 
             {/* Navigation Links */}
             <div className="flex-1 px-3 space-y-1 overflow-y-auto">
-              {employeeLink.map((link, index) => (
+              {navLinks.map((link, index) => (
                 <a
                   key={index}
-                  href={`/${link.name.toLowerCase()}`}
+                  // href={`/${link.name.toLowerCase()}`}
+                  href={link.href}
                   className={`group flex items-center gap-3 px-3 py-2.5 rounded-md text-[13px] font-medium transition-all duration-150 relative ${pathname === `/${link.name.toLowerCase()}` ? "bg-indigo-500/12 text-indigo-300" : "text-slate-400 hover:text-white hover:bg-slate-700"}`}
                 >
                   {link.icon}
@@ -152,12 +198,18 @@ const Layout = () => {
             </div>
           </div>
         </div>
+        <div className="px-5 pt-5 pb-2">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+            Navigation
+          </p>
+        </div>
         <div className="flex-1 px-3 space-y-1 overflow-y-auto">
-          {employeeLink.map((link, index) => (
+          {navLinks.map((link, index) => (
             <a
               key={index}
-              href={`/${link.name.toLowerCase()}`}
-              className={`group flex items-center gap-3 px-3 py-2.5 rounded-md text-[13px] font-medium transition-all duration-150 relative ${pathname === `/${link.name.toLowerCase()}` ? "bg-indigo-500/12 text-indigo-300" : "text-slate-400 hover:text-white hover:bg-slate-700"}`}
+              // href={`/${link.name.toLowerCase()}`}
+              href={link.href}
+              className={`group flex items-center gap-3 px-3 py-2.5 rounded-md text-[13px] font-medium transition-all duration-150 relative ${pathname === `/${link.name.toLowerCase()}` ? "bg-indigo-500/12 text-indigo-300" : "text-slate-400 text-white hover:bg-slate-700"}`}
             >
               {link.icon}
               <span className="flex-1">{link.name}</span>
@@ -174,7 +226,7 @@ const Layout = () => {
         </div>
       </aside>
       <main className="flex-1 overflow-y-auto ">
-        <div className="p-4 pt-16 sm:p-6 lg:p-8 max-w-400 mx-auto bg-amber-50 min-h-screen">
+        <div className="p-4 pt-16 sm:p-6 lg:p-8 max-w-400 mx-auto  min-h-screen">
           <Outlet />
         </div>
       </main>
