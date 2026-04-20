@@ -5,16 +5,17 @@ import { DoorOpen, FilePenLine, LogOutIcon } from "lucide-react";
 const Leave = () => {
   return (
     <div>
-      <div className="flex flex-col md:flex-row md:justify-between items-center">
+      {/* <div className="flex flex-col md:flex-row justify-between items-start md:items-center"> */}
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div className="mb-6">
           <h1 className="text-2xl font-medium mb-2">Leave Management</h1>
           <p className="text-sm text-gray-600">
             Your leave requests and history
           </p>
         </div>
-        <button className="border py-2 md:px-4 flex justify-center items-center gap-x-2  rounded-lg bg-blue-600 text-white ">
-          <Plus className="h-4 w-4" />
-          <p>Apply for Leave</p>
+        <button className="flex justify-center items-center gap-x-3 border w-full py-2 mt-5 rounded-lg bg-blue-700 text-white md:w-fit md:mt-0 hover:bg-blue-800 transition-all duration-150 md:px-4">
+          <Plus color="white" className="h-4 w-4" />
+          <span className="text-sm">Apply for leave</span>
         </button>
       </div>
       <div className="mt-6 flex flex-col space-y-3 md:grid md:grid-cols-3 md:gap-4 md:space-y-0 ">

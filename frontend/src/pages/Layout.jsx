@@ -113,7 +113,7 @@ const Layout = () => {
                     </p>
                   </div>
                 </div>
-                <button className="lg:hidden text-slate-400 hover:text-white p-1">
+                <button className="md:hidden  text-slate-400 hover:text-white p-1">
                   <X color="white" onClick={() => handleSidebarToggle(false)} />
                 </button>
               </div>
