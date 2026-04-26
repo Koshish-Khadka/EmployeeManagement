@@ -1,0 +1,29 @@
+import jwt from "jsonwebtoken";
+
+// protect routes
+export const protect = (req, res, next) => {
+  try {
+    const authHeader = req.headers.authorization;
+    console.log("Auth Middlerware", authHeader);
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    const token = authHeader.split(" ")[1];
+    const session = jwt.verify(token, process.env.JWT_SECRET);
+    if (!session) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    req.session = session;
+    next();
+  } catch (error) {
+    res.status(500).json({ error: "Failed to authenticate" });
+  }
+};
+
+// protect admin routes
+export const protectAdmin = (req, res, next) => {
+  if (req.session.role !== "ADMIN") {
+    return res.status(403).json({ error: "Access denied" });
+  }
+  next();
+};
