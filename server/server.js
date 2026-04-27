@@ -13,12 +13,17 @@ import { inngest, functions } from "./inngest/index.js";
 
 dotenv.config();
 
-
 const app = express();
 app.use(express.json());
+// app.use(
+//   cors({
+//     origin: "http://localhost:5173/",
+//   }),
+// );
 app.use(
   cors({
-    origin: "*",
+    origin: "http://localhost:5173",
+    credentials: true,
   }),
 );
 app.use(express.json());
@@ -32,10 +37,8 @@ app.use("/api/attendance", attendanceRoute);
 app.use("/api/leave", leaveRoute);
 app.use("/api/payslip", payslipRoute);
 
-
 // Set up the "/api/inngest" (recommended) routes with the serve handler
 app.use("/api/inngest", serve({ client: inngest, functions }));
-
 
 app.get("/", (req, res) => {
   res.status(200).json({ message: " Backend is running" });

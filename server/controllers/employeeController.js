@@ -1,9 +1,12 @@
 import pool from "../config/db.js";
 import bcrypt from "bcryptjs";
+
 // Get employee
 export const getEmployee = async (req, res) => {
   try {
-    const employee = await pool.query("SELECT * FROM employees");
+    const employee = await pool.query(
+      "SELECT * FROM employees WHERE isdeleted = false",
+    );
     if (employee.rows.length === 0) {
       res.status(404).json({ message: "No employee found" });
     }
@@ -14,7 +17,6 @@ export const getEmployee = async (req, res) => {
   }
 };
 
-// create employee
 export const createEmployee = async (req, res) => {
   try {
     const {
@@ -38,20 +40,40 @@ export const createEmployee = async (req, res) => {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const userRole = role || "employee";
+    const userRole = role || "EMPLOYEE";
+
     const newUser = await pool.query(
-      `INSERT INTO users (email,password,role) VALUES (${email},${hashedPassword},${userRole})`,
+      `INSERT INTO users (email, password, role) VALUES ($1, $2, $3) RETURNING id`,
+      [email, hashedPassword, userRole],
     );
+
     const newEmployee = await pool.query(
-      `INSERT INTO employees (userId,first_name, last_name, email, phone, position, department, basic_salary, allowances, deductions, join_date, bio) VALUES (${newUser.rows[0].id},${firstName},${lastName},${email},${phone},${position},${department},${basicSalary},${allowances},${deductions},${joinDate},${bio}) RETURNING *`,
+      `INSERT INTO employees 
+      (userId, firstName, lastName, email, phone, position, basicSalary, allowances, deductions, joinDate, bio,department) 
+      VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) 
+      RETURNING *`,
+      [
+        newUser.rows[0].id,
+        firstName,
+        lastName,
+        email,
+        phone,
+        position,
+        basicSalary,
+        allowances,
+        deductions,
+        joinDate,
+        bio,
+        department,
+      ],
     );
+
     res.status(201).json({ status: "success", data: newEmployee.rows[0] });
   } catch (error) {
     console.log("Failed to createEmployee", error);
     res.status(500).json({ error: "Failed to create employee" });
   }
 };
-
 // update employee
 
 export const updateEmployee = async (req, res) => {

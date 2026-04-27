@@ -1,8 +1,11 @@
 import { Plus } from "lucide-react";
 import React from "react";
 import { DoorOpen, FilePenLine, LogOutIcon } from "lucide-react";
+import LeaveForm from "../components/LeaveForm";
 
 const Leave = () => {
+  const [leaveModalOpen, setLeaveModalOpen] = React.useState(false);
+
   return (
     <div>
       {/* <div className="flex flex-col md:flex-row justify-between items-start md:items-center"> */}
@@ -13,7 +16,10 @@ const Leave = () => {
             Your leave requests and history
           </p>
         </div>
-        <button className="flex justify-center items-center gap-x-3 border w-full py-2 mt-5 rounded-lg bg-blue-700 text-white md:w-fit md:mt-0 hover:bg-blue-800 transition-all duration-150 md:px-4">
+        <button
+          onClick={() => setLeaveModalOpen(true)}
+          className="flex justify-center items-center gap-x-3 border w-full py-2 mt-5 rounded-lg bg-blue-700 text-white md:w-fit md:mt-0 hover:bg-blue-800 transition-all duration-150 md:px-4"
+        >
           <Plus color="white" className="h-4 w-4" />
           <span className="text-sm">Apply for leave</span>
         </button>
@@ -57,6 +63,12 @@ const Leave = () => {
           </div>
         </div>
       </div>
+      {/* leave modal */}
+      {leaveModalOpen && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50 p-4 sm:p-6">
+          <LeaveForm />
+        </div>
+      )}
     </div>
   );
 };

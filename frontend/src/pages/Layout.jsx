@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, Navigate, Outlet } from "react-router-dom";
+import { Link, Navigate, Outlet, useLocation } from "react-router-dom";
 import {
   BadgeDollarSign,
   FilePenLine,
@@ -16,7 +16,9 @@ import Loading from "../components/Loading";
 
 const Layout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+  const location = useLocation();
+  const pathname = location.pathname;
+  
   const { logout, user, loading } = useAuth();
   if (loading) {
     return <Loading />;
@@ -38,22 +40,18 @@ const Layout = () => {
       href: "/dashboard",
     },
     {
-      name: "Employee",
+      name: "Employees",
       icon: <User2 className="h-4 w-4" />,
       href: "/employees",
     },
-    {
-      name: "Leave",
-      icon: <LogOut className="h-4 w-4" />,
-      href: "/leave",
-    },
+    { name: "Leave", icon: <LogOut className="h-4 w-4" />, href: "/leave" },
     {
       name: "PaySlip",
       icon: <BadgeDollarSign className="h-4 w-4" />,
       href: "/payslip",
     },
     {
-      name: "Settings",
+      name: "Setting",
       icon: <Settings className="h-4 w-4" />,
       href: "/setting",
     },
@@ -70,24 +68,22 @@ const Layout = () => {
       icon: <FilePenLine className="h-4 w-4" />,
       href: "/attendance",
     },
-    {
-      name: "Leave",
-      icon: <LogOut className="h-4 w-4" />,
-      href: "/leave",
-    },
+    { name: "Leave", icon: <LogOut className="h-4 w-4" />, href: "/leave" },
     {
       name: "PaySlip",
       icon: <BadgeDollarSign className="h-4 w-4" />,
       href: "/payslip",
     },
     {
-      name: "Settings",
+      name: "Setting",
       icon: <Settings className="h-4 w-4" />,
       href: "/setting",
     },
   ];
 
-  const pathname = window.location.pathname;
+  // const pathname = window.location.pathname;
+
+
   const navLinks = user.role === "ADMIN" ? adminLink : employeeLink;
 
   return (
@@ -156,7 +152,12 @@ const Layout = () => {
                   key={index}
                   // href={`/${link.name.toLowerCase()}`}
                   to={link.href}
-                  className={`group flex items-center gap-3 px-3 py-2.5 rounded-md text-[13px] font-medium transition-all duration-150 relative ${pathname === `/${link.name.toLowerCase()}` ? "bg-indigo-500/12 text-indigo-300" : "text-slate-400 hover:text-white hover:bg-slate-700"}`}
+                  //   className={`group flex items-center gap-3 px-3 py-2.5 rounded-md text-[13px] font-medium transition-all duration-150 relative ${pathname === `${link.href.toLowerCase()}` ? "bg-indigo-500/12 text-indigo-300" : "text-slate-400 hover:text-white hover:bg-slate-700"}`}
+                  className={`group flex items-center gap-3 px-3 py-2.5 rounded-md text-[13px] font-medium transition-all duration-150 relative ${
+                    pathname === link.href
+                      ? "bg-indigo-500/12 text-indigo-300"
+                      : "text-slate-400 hover:bg-slate-700"
+                  }`}
                 >
                   {link.icon}
                   <span className="flex-1">{link.name}</span>
@@ -222,7 +223,12 @@ const Layout = () => {
               key={index}
               // href={`/${link.name.toLowerCase()}`}
               to={link.href}
-              className={`group flex items-center gap-3 px-3 py-2.5 rounded-md text-[13px] font-medium transition-all duration-150 relative ${pathname === `/${link.name.toLowerCase()}` ? "bg-indigo-500/12 text-indigo-300" : "text-slate-400 text-white hover:bg-slate-700"}`}
+              // className={`group flex items-center gap-3 px-3 py-2.5 rounded-md text-[13px] font-medium transition-all duration-150 relative ${pathname === `${link.href.toLowerCase()}` ? "bg-indigo-500/12 text-indigo-300" : "text-slate-400  hover:bg-slate-700"}`}
+              className={`group flex items-center gap-3 px-3 py-2.5 rounded-md text-[13px] font-medium transition-all duration-150 relative ${
+                pathname === link.href
+                  ? "bg-indigo-500/12 text-indigo-300"
+                  : "text-slate-400 hover:bg-slate-700"
+              }`}
             >
               {link.icon}
               <span className="flex-1">{link.name}</span>
