@@ -50,6 +50,30 @@ const Attendance = () => {
           </div>
         </button>
       </div>
+      {/* table */}
+      <div className="card overflow-hidden mt-8">
+        <div className="overflow-x-hidden">
+          <table className="table-modern">
+            <thead>
+              <tr>
+                <th>DATE</th>
+                <th>CHECK IN</th>
+                <th>CHECK OUT</th>
+                <th>WORKING HOURS</th>
+                <th>DAY TYPE</th>
+                <th>STATUS</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td colSpan="4" className="text-center py-12 text-slate-400">
+                  No records found
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 };

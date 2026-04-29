@@ -18,7 +18,6 @@ export const checkInOut = async (req, res) => {
     }
     const currentTime = new Date(); //getting current time
     currentTime.setHours(0, 0, 0, 0); // setting time to 00:00:00 for date comparison
-
     const attendance = await pool.query();
   } catch (error) {
     res.status(500).json({ error: "Failed to check in/out" });

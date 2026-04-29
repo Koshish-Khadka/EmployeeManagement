@@ -9,32 +9,22 @@ import {
   User2,
 } from "lucide-react";
 import Loading from "../components/Loading";
-import { useEffect, useState } from "react";
-
+import { useAuth } from "../context/AuthContext";
+import { Link } from "react-router-dom";
 const Dashboard = () => {
-  const name = "Koshish";
-  const role = "admin";
-const [isLoading, setIsLoading] = useState(true);
+  const { user, loading } = useAuth();
 
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000); // 2 seconds
-
-    return () => clearTimeout(timer); // cleanup
-  }, []);
-
-  if (isLoading) {
+  if (loading) {
     return <Loading />;
   }
 
-  if (role === "admin") {
+  if (user.role === "ADMIN") {
     return (
       <div>
         <div>
           <h1 className="text-2xl font-medium mb-2">Dashboard</h1>
-          <p className="text-sm text-gray-600 ">Welcome, {name}!</p>
+          <p className="text-sm text-gray-600 ">Welcome, koshish!</p>
+          <p className="text-sm text-gray-600 "> {user.role}!</p>
         </div>
         <div className="mt-8 space-y-4 md:grid md:grid-cols-4 md:gap-4 md:space-y-0">
           {/* box */}
@@ -121,7 +111,7 @@ const [isLoading, setIsLoading] = useState(true);
         </div>
       </div>
       {/* attendance button */}
-      <div className="mt-7 flex flex-col md:flex-row gap-4 ">
+      {/* <div className="mt-7 flex flex-col md:flex-row gap-4 ">
         <button className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
           <div className="flex justify-center items-center gap-x-3">
             <p>Mark Attendance</p>
@@ -131,6 +121,18 @@ const [isLoading, setIsLoading] = useState(true);
         <button className="border border-gray-200 text-black py-2 px-4 rounded-md mt-2">
           <p>Apply for Leave</p>
         </button>
+      </div> */}
+      <div className="mt-7 flex flex-col sm:flex-row gap-3 ">
+        <Link to={"/attendance"}>
+          <button className="text-sm bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600">
+            Mark Attendance
+          </button>
+        </Link>
+        <Link to={"/leave"}>
+          <button className="text-sm border border-gray-200 text-black py-2 px-4 rounded-md">
+            Apply for Leave
+          </button>
+        </Link>
       </div>
     </div>
   );

@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 
 const Employee = () => {
   const [addEmployeeModalOpen, setAddEmployeeModalOpen] = useState(false);
+  const [searchText, setSearchText] = useState("");
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["employees"],
@@ -17,6 +18,14 @@ const Employee = () => {
       return response.data.data;
     },
   });
+
+  const filterEmployee = data?.filter(
+    (item) =>
+      item.firstname?.toLowerCase().includes(searchText.toLowerCase()) ||
+      item.lastname?.toLowerCase().includes(searchText.toLowerCase()),
+  );
+
+  // const filerByDropdown=data.filter((item)=>item.department.toLowerCase().includes())
 
   if (isError) {
     return toast.error("Failed to fetch employees. Please try again later.");
@@ -43,6 +52,7 @@ const Employee = () => {
       {/* search bar */}
       <div className="mt-4 flex flex-col md:flex-row md:gap-x-4">
         <input
+          onChange={(e) => setSearchText(e.target.value)}
           type="text"
           placeholder="Search employees..."
           className="w-full border border-gray-300 rounded-lg px-4 py-2 mt-4 focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -65,7 +75,7 @@ const Employee = () => {
         </>
       ) : (
         <div className="mt-8 flex flex-col gap-y-4 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-4">
-          {data.map((employee, index) => {
+          {filterEmployee.map((employee, index) => {
             return (
               <div key={index}>
                 <UserCard employee={employee} />

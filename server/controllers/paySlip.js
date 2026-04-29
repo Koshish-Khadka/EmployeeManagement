@@ -33,6 +33,7 @@ export const createPayslip = async (req, res) => {
       data: result.rows[0],
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Failed to create payslip" });
   }
 };
@@ -40,9 +41,8 @@ export const createPayslip = async (req, res) => {
 // get payslip
 export const getPayslips = async (req, res) => {
   try {
-    const session = req.session;
-    const userId = session.userId;
-    const isAdmin = session.role === "ADMIN";
+    const userId = req.session.userId;
+    const isAdmin = req.session.role === "ADMIN";
 
     // admin
     if (isAdmin) {
@@ -55,19 +55,15 @@ export const getPayslips = async (req, res) => {
           p.allowances,
           p.deductions,
           p.netSalary,
-          p.createdAt,
           p.employeeId,
-
           json_build_object(
             'id', e.id,
-            'name', e.name,
+            'name', e.firstname,
             'email', e.email
           ) AS employee
 
         FROM payslip p
-        JOIN employees e ON p.employeeId = e.id
-        ORDER BY p.createdAt DESC
-      `);
+        JOIN employees e ON p.employeeId = e.id`);
 
       const data = result.rows.map((row) => ({
         ...row,
@@ -92,8 +88,7 @@ export const getPayslips = async (req, res) => {
       // Get payslips of this employee
       const payslipResult = await pool.query(
         `SELECT * FROM payslip 
-         WHERE employeeId = $1 
-         ORDER BY createdAt DESC`,
+         WHERE employeeId = $1`,
         [employee.id],
       );
 
@@ -105,6 +100,7 @@ export const getPayslips = async (req, res) => {
       return res.json({ data });
     }
   } catch (error) {
+    console.log(error);
     return res.status(500).json({ error: "Failed" });
   }
 };

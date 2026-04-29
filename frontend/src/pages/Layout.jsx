@@ -134,7 +134,7 @@ const Layout = () => {
                     {name}
                   </p>
                   <p className="text-[11px] text-slate-500 truncate">
-                    Employee
+                  {user?.role}
                   </p>
                 </div>
               </div>
@@ -208,7 +208,7 @@ const Layout = () => {
               <p className="text-[13px] font-medium text-slate-200 truncate">
                 koshish
               </p>
-              <p className="text-[11px] text-slate-500 truncate">Employee</p>
+              <p className="text-[11px] text-slate-500 truncate">{user?.role}</p>
             </div>
           </div>
         </div>

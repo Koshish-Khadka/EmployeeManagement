@@ -116,6 +116,11 @@ const AddEmployee = ({ close, title, subtitle }) => {
                   {...register("phone")}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
+                {errors.phone && (
+                  <span className="text-red-500 text-sm">
+                    Phone number is required
+                  </span>
+                )}
               </div>
               <div>
                 <label
@@ -144,6 +149,9 @@ const AddEmployee = ({ close, title, subtitle }) => {
                   {...register("bio")}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
+                {errors.bio && (
+                  <span className="text-red-500 text-sm">Bio is required</span>
+                )}
               </div>
             </div>
           </div>
@@ -172,6 +180,11 @@ const AddEmployee = ({ close, title, subtitle }) => {
                   <option value="engineering">Engineering</option>
                   <option value="sales">Sales</option>
                 </select>
+                {errors.department && (
+                  <span className="text-red-500 text-sm">
+                    Select employee department
+                  </span>
+                )}
               </div>
               <div>
                 <label
@@ -186,6 +199,11 @@ const AddEmployee = ({ close, title, subtitle }) => {
                   {...register("position")}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
+                {errors.position && (
+                  <span className="text-red-500 text-sm">
+                    employee position required
+                  </span>
+                )}
               </div>
               <div>
                 <label
@@ -255,6 +273,11 @@ const AddEmployee = ({ close, title, subtitle }) => {
                   {...register("email", { required: true })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
+                {errors.email && (
+                  <span className="text-red-500 text-sm">
+                    Assign email for employee
+                  </span>
+                )}
               </div>
               <div>
                 <label
@@ -269,6 +292,11 @@ const AddEmployee = ({ close, title, subtitle }) => {
                   {...register("password", { required: true })}
                   className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
+                {errors.password && (
+                  <span className="text-red-500 text-sm">
+                    Assign password for employee
+                  </span>
+                )}
               </div>
               <div>
                 <label
@@ -286,6 +314,11 @@ const AddEmployee = ({ close, title, subtitle }) => {
                   <option value="ADMIN">Admin</option>
                   <option value="EMPLOYEE">Employee</option>
                 </select>
+                {errors.role && (
+                  <span className="text-red-500 text-sm">
+                    Assign role for employee
+                  </span>
+                )}
               </div>
             </div>
           </div>

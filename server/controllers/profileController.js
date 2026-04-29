@@ -3,17 +3,19 @@ import pool from "../config/db.js";
 // get profile
 export const getProfile = async (req, res) => {
   try {
-    const userId = req.session.userId;
 
-    const result = await pool.query(
-      `SELECT * FROM employees WHERE userId=${userId}`,
-    );
+    const userId = req.session.userId;
+    console.log("userId", userId);
+    const result = await pool.query(`SELECT * FROM employees WHERE userid=$1`, [
+      userId,
+    ]);
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Profile not found" });
     }
 
     res.status(200).json({ status: "success", data: result.rows[0] });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Failed to get profile" });
   }
 };

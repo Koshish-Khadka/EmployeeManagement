@@ -7,11 +7,13 @@ export const protect = (req, res, next) => {
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return res.status(401).json({ error: "Unauthorized" });
     }
+    // check/ verify token
     const token = authHeader.split(" ")[1];
     const session = jwt.verify(token, process.env.JWT_SECRET);
     if (!session) {
       return res.status(401).json({ error: "Unauthorized" });
     }
+    console.log("Session value", session);
     req.session = session;
     next();
   } catch (error) {

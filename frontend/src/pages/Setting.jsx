@@ -1,7 +1,24 @@
+import { useQuery } from "@tanstack/react-query";
 import { Lock, Save, User } from "lucide-react";
-import React from "react";
-
+import React, { useState } from "react";
+import toast from "react-hot-toast";
+import api from "../axios/axios";
+import ChangePassword from "../components/ChangePassword";
 const Setting = () => {
+  const [passwordModal, setPasswordModal] = useState(false);
+
+  const { data, isError } = useQuery({
+    queryKey: ["getProfile"],
+    queryFn: async () => {
+      const response = await api.get("/profile");
+      return response.data;
+    },
+  });
+
+  console.log(data);
+  if (isError) {
+    return toast.error("Failed to fetch profile data. Please try again later.");
+  }
   return (
     <div>
       {" "}
@@ -106,12 +123,21 @@ const Setting = () => {
             </p>
           </div>
           <div>
-            <button className="border px-2 py-1 rounded-md border-slate-200 text-slate-600">
+            <button
+              className="border px-2 py-1 rounded-md border-slate-200 text-slate-600"
+              onClick={() => setPasswordModal(true)}
+            >
               Change
             </button>
           </div>
         </div>
       </div>
+      {/* Password modal */}
+      {passwordModal && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50">
+          <ChangePassword onClose={() => setPasswordModal(false)} />
+        </div>
+      )}
     </div>
   );
 };
