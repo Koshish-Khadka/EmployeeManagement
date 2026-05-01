@@ -1,9 +1,41 @@
+import { useMutation } from "@tanstack/react-query";
 import { Lock, X } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
+import api from "../axios/axios";
 
 const ChangePassword = ({ onClose }) => {
-  const { register } = useForm();
+  const { register, reset, handleSubmit } = useForm();
+
+  const changePassword = useMutation({
+    mutationFn: async (data) => {
+      const response = await api.patch("/auth/change-password", data);
+      if (response.data?.error) {
+        throw new Error(response.data.error);
+      }
+      return response.data;
+    },
+    onSuccess: () => {
+      toast.success("Change Password Successfully");
+      reset({
+        currentPassword: "",
+        newPassword: "",
+      });
+      onClose();
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to update profile");
+    },
+  });
+
+  const onSubmit = (data) => {
+    changePassword.mutate({
+      currentPassword: data.currentPassword,
+      newPassword: data.newPassword,
+    });
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg animate-fade-in max-h-[85vh] overflow-y-auto p-6">
       <div className="flex justify-between items-center mb-6">
@@ -19,7 +51,7 @@ const ChangePassword = ({ onClose }) => {
         </button>
       </div>
       {/* forms */}
-      <form action="" className="space-y-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
         <div>
           <label htmlFor="" className="text-sm font-medium text-slate-700 ">
             Current Password
@@ -51,6 +83,7 @@ const ChangePassword = ({ onClose }) => {
           </button>
           <button
             // onClick={handleSubmit(onSubmit)}
+            type="submit"
             className="flex justify-center items-center gap-x-3 border w-full py-2 mt-5 rounded-lg bg-blue-700 text-white  hover:bg-blue-800 transition-all duration-150 md:px-4"
           >
             Update Password

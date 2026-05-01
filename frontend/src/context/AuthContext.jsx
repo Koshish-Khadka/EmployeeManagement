@@ -32,17 +32,18 @@ export const AuthProvider = ({ children }) => {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     refreshSession();
   }, []);
 
-  const login = async (email, password, role) => {
-    const { data } = await api.post("/auth/login", { email, password, role });
-    // console.log("login data", data);
-    localStorage.setItem("token", data.token);
-    setToken(data.token);
-    setUser(data.user);
-  };
+  // const login = async (email, password, role) => {
+  //   const { data } = await api.post("/auth/login", { email, password, role });
+  //   // console.log("login data", data);
+  //   localStorage.setItem("token", data.token);
+  //   setToken(data.token);
+  //   setUser(data.user);
+  // };
 
   const logout = () => {
     localStorage.removeItem("token");
@@ -51,7 +52,7 @@ export const AuthProvider = ({ children }) => {
   };
   return (
     <AuthContext.Provider
-      value={{ user, setUser, login, logout, loading, token, refreshSession }}
+      value={{ user, setUser, logout, loading, token, refreshSession }}
     >
       {children}
     </AuthContext.Provider>

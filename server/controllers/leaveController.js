@@ -87,7 +87,7 @@ export const getLeave = async (req, res) => {
   try {
     const userId = req.session.userId;
     const isAdmin = req.session.role === "ADMIN";
-    console.log("Is admin", isAdmin);
+
     if (isAdmin) {
       const status = req.query.status;
 

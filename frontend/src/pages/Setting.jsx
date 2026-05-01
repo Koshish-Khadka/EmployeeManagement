@@ -1,11 +1,20 @@
-import { useQuery } from "@tanstack/react-query";
+import {
+  QueryClient,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { Lock, Save, User } from "lucide-react";
 import React, { useState } from "react";
 import toast from "react-hot-toast";
 import api from "../axios/axios";
 import ChangePassword from "../components/ChangePassword";
+import { useForm } from "react-hook-form";
 const Setting = () => {
   const [passwordModal, setPasswordModal] = useState(false);
+
+  const { register, handleSubmit, reset } = useForm();
+  const queryClient = useQueryClient();
 
   const { data, isError } = useQuery({
     queryKey: ["getProfile"],
@@ -15,7 +24,33 @@ const Setting = () => {
     },
   });
 
-  console.log(data);
+  const updateProfile = useMutation({
+    mutationFn: async (data) => {
+      const response = await api.patch("/profile", data);
+
+      if (response.data?.error) {
+        throw new Error(response.data.error);
+      }
+      return response.data;
+    },
+    onSuccess: () => {
+      toast.success("Profile update added successfully");
+      queryClient.invalidateQueries({ queryKey: ["getProfile"] });
+      reset({
+        bio: "",
+      });
+    },
+    onError: (error) => {
+      toast.error(error.message || "Failed to update profile");
+    },
+  });
+
+  const onSubmit = (data) => {
+    updateProfile.mutate({
+      bio: data.bio,
+    });
+  };
+
   if (isError) {
     return toast.error("Failed to fetch profile data. Please try again later.");
   }
@@ -34,7 +69,10 @@ const Setting = () => {
             <h2>Public Profile</h2>
           </div>
 
-          <form action="" className="mt-7 md:grid md:grid-cols-2 md:gap-x-4">
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="mt-7 md:grid md:grid-cols-2 md:gap-x-4"
+          >
             <div className="mb-4">
               <label
                 htmlFor="name"
@@ -46,8 +84,10 @@ const Setting = () => {
                 type="name"
                 id="name"
                 required
+                value={data?.data.firstname || ""}
+                readOnly
                 placeholder="Hari"
-                className="w-full px-4 py-3 rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="cursor-not-allowed w-full px-4 py-3 rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               />
             </div>
             <div className="mb-4">
@@ -61,8 +101,10 @@ const Setting = () => {
                 type="email"
                 id="email"
                 required
+                readOnly
+                value={data?.data.email}
                 placeholder="hari123@gmail.com"
-                className="w-full px-4 py-3 rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="cursor-not-allowed w-full px-4 py-3 rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               />
             </div>
             <div className="mb-4 md:col-span-2">
@@ -76,8 +118,11 @@ const Setting = () => {
                 type="text"
                 id="position"
                 required
+                // readOnly
+                disabled
+                value={data?.data.position}
                 placeholder="Software Engineer"
-                className="w-full px-4 py-3 rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="cursor-not-allowed w-full px-4 py-3 rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               />
             </div>
             <div className="mb-4 md:col-span-2">
@@ -90,6 +135,7 @@ const Setting = () => {
               <textarea
                 rows={4}
                 placeholder="Tell us about yourself"
+                {...register("bio", { required: true })}
                 className="w-full px-4 py-3 rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
               />
             </div>

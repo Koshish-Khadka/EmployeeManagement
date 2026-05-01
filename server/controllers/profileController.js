@@ -3,9 +3,7 @@ import pool from "../config/db.js";
 // get profile
 export const getProfile = async (req, res) => {
   try {
-
     const userId = req.session.userId;
-    console.log("userId", userId);
     const result = await pool.query(`SELECT * FROM employees WHERE userid=$1`, [
       userId,
     ]);
@@ -24,6 +22,7 @@ export const getProfile = async (req, res) => {
 export const updateProfile = async (req, res) => {
   try {
     const userId = req.session.userId;
+    // console.log("userId", userId);
     const result = await pool.query(
       `SELECT * FROM employees WHERE userId=${userId}`,
     );
@@ -37,11 +36,18 @@ export const updateProfile = async (req, res) => {
         .json({ error: "Profile is deleted you cannot update it" });
     }
     const { bio } = req.body;
+    // console.log("bio data:", bio);
+
+    // const updatedProfile = await pool.query(
+    //   `UPDATE employees SET bio = ${bio} WHERE userid = ${userId} RETURNING *`,
+    // );
     const updatedProfile = await pool.query(
-      `UPDATE employees SET bio = ${bio} WHERE userId = ${userId} RETURNING *`,
+      `UPDATE employees SET bio = $1 WHERE userid = $2 RETURNING *`,
+      [bio, userId],
     );
-    res.status(200).json({ status: "success", data: updateProfile.rows[0] });
+    res.status(200).json({ status: "success", data: updatedProfile.rows[0] });
   } catch (error) {
+    console.log("failed to update profile", error);
     res.status(500).json({ error: "Failed to update profile" });
   }
 };

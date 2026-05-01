@@ -13,7 +13,6 @@ export const protect = (req, res, next) => {
     if (!session) {
       return res.status(401).json({ error: "Unauthorized" });
     }
-    console.log("Session value", session);
     req.session = session;
     next();
   } catch (error) {

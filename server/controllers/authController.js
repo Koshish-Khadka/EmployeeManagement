@@ -71,7 +71,8 @@ export const changePassword = async (req, res) => {
     }
     const hashNewPassword = await bcrypt.hash(newPassword, 10);
     const updatePassword = await pool.query(
-      `UPDATE users SET password = '${hashNewPassword}' WHERE id = ${userId}`,
+      `UPDATE users SET password = $1 WHERE id = $2`,
+      [hashNewPassword, userId],
     );
     res.status(200).json({ message: "Password changed successfully" });
   } catch (error) {

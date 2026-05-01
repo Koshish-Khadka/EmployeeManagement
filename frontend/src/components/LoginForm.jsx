@@ -5,29 +5,65 @@ import { useForm } from "react-hook-form";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { useMutation } from "@tanstack/react-query";
+import api from "../axios/axios";
 
 const LoginForm = ({ role, title, subtitle }) => {
-  const [loading, setLoading] = React.useState(false);
-
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const { login } = useAuth();
+  const { setToken, setUser } = useAuth();
   const navigate = useNavigate();
-  const onSubmit = (data) => {
-    try {
-      setLoading(true);
-      login(data.email, data.password, role);
-      navigate("/dashboard");
+
+  const loginMutation = useMutation({
+    mutationFn: async ({ email, password, role }) => {
+      const { data } = await api.post("/auth/login", {
+        email,
+        password,
+        role,
+      });
+
+      if (data?.error) {
+        throw new Error(data.error);
+      }
+
+      return data;
+    },
+    onSuccess: (data) => {
+      localStorage.setItem("token", data.token);
+      setToken(data.token);
+      setUser(data.user);
+
       toast.success("Login successful!");
-    } catch (error) {
-      toast.error(error.message || "Login failed. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+      navigate("/dashboard");
+    },
+    onError: (error) => {
+      toast.error(error.response?.data?.error || "Login failed");
+    },
+  });
+
+  const onSubmit = (formData) => {
+    loginMutation.mutate({
+      email: formData.email,
+      password: formData.password,
+      role,
+    });
   };
+
+  // const onSubmit = (data) => {
+  //   try {
+  //     setLoading(true);
+  //     login(data.email, data.password, role);
+  //     navigate("/dashboard");
+  //     toast.success("Login successful!");
+  //   } catch (error) {
+  //     toast.error(error.message || "Login failed. Please try again.");
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
@@ -91,7 +127,7 @@ const LoginForm = ({ role, title, subtitle }) => {
               type="submit"
               className="border p-2 w-full rounded-xl bg-blue-600 text-white hover:bg-blue-800 transition-colors "
             >
-              {loading ? "Logging in..." : "Login"}
+              {loginMutation.isPending ? "Logging in..." : "Login"}
             </button>
           </form>
         </div>
