@@ -32,7 +32,7 @@ const PaySlip = () => {
             Generate and manage employee payslips.
           </p>
         </div>
-        {user.role !== "ADMIN" && (
+        {user.role === "ADMIN" && (
           <button
             onClick={() => setPayslipModal(true)}
             className="flex justify-center items-center gap-x-3 border w-full py-2 mt-5 rounded-lg bg-blue-700 text-white md:w-fit md:mt-0 hover:bg-blue-800 transition-all duration-150 md:px-4"
@@ -77,7 +77,7 @@ const PaySlip = () => {
               ) : (
                 data?.data?.map((data) => (
                   <tr key={data.id}>
-                    <td>{data.employee.name}</td>
+                    {user.role === "ADMIN" && <td>{data.employee.name}</td>}
 
                     <td>
                       {data.year},{data.month}

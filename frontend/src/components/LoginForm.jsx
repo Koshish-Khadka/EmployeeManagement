@@ -18,53 +18,52 @@ const LoginForm = ({ role, title, subtitle }) => {
   const navigate = useNavigate();
 
   const loginMutation = useMutation({
-    mutationFn: async ({ email, password, role }) => {
-      const { data } = await api.post("/auth/login", {
+    mutationFn: async ({ email, password, role_type }) => {
+      const response = await api.post("/auth/login", {
         email,
         password,
-        role,
+        role_type,
       });
 
-      if (data?.error) {
-        throw new Error(data.error);
+      if (response.data?.error) {
+        throw new Error(response.data.error);
       }
 
-      return data;
+      return response.data;
     },
     onSuccess: (data) => {
+      console.log("SUCCESS", data);
       localStorage.setItem("token", data.token);
       setToken(data.token);
       setUser(data.user);
-
       toast.success("Login successful!");
       navigate("/dashboard");
     },
     onError: (error) => {
+      console.log("ERROR:", error);
       toast.error(error.response?.data?.error || "Login failed");
     },
   });
 
+  // const onSubmit = (formData) => {
+  //   loginMutation.mutate({
+  //     email: formData.email,
+  //     password: formData.password,
+  //     role_type: role,
+  //   });
+
+  // };
   const onSubmit = (formData) => {
-    loginMutation.mutate({
+    const payload = {
       email: formData.email,
       password: formData.password,
-      role,
-    });
+      role_type: role,
+    };
+
+    console.log("FRONTEND PAYLOAD:", payload); // 👈 check this
+
+    loginMutation.mutate(payload);
   };
-
-  // const onSubmit = (data) => {
-  //   try {
-  //     setLoading(true);
-  //     login(data.email, data.password, role);
-  //     navigate("/dashboard");
-  //     toast.success("Login successful!");
-  //   } catch (error) {
-  //     toast.error(error.message || "Login failed. Please try again.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       <LoginLeftBanner />

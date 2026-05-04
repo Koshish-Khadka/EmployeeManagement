@@ -37,18 +37,29 @@ const UserCard = ({ employee }) => {
           <span className="absolute top-3 left-3 text-xs font-medium bg-white px-3 py-1 rounded-xl shadow">
             {employee.department}
           </span>
-          <span
-            className="absolute top-3 right-20 text-xs font-medium bg-yellow-700 text-white px-3 py-1 rounded-xl shadow hover:bg-yellow-600 cursor-pointer"
-            onClick={() => setEditMode(true)}
-          >
-            Edit
-          </span>
-          <span
-            className="absolute top-3 right-3 text-xs font-medium bg-red-700 text-white px-3 py-1 rounded-xl shadow hover:bg-red-600 cursor-pointer"
-            onClick={() => deleteEmployee.mutate(employee.id)}
-          >
-            Delete
-          </span>
+          {employee.employment_status === "active" ? (
+            <>
+              <span
+                className="absolute top-3 right-20 text-xs font-medium bg-yellow-700 text-white px-3 py-1 rounded-xl shadow hover:bg-yellow-600 cursor-pointer"
+                onClick={() => setEditMode(true)}
+              >
+                Edit
+              </span>
+              <span
+                className="absolute top-3 right-3 text-xs font-medium bg-red-700 text-white px-3 py-1 rounded-xl shadow hover:bg-red-600 cursor-pointer"
+                onClick={() => deleteEmployee.mutate(employee.id)}
+              >
+                Delete
+              </span>
+            </>
+          ) : (
+            <>
+              <span className="absolute top-3 right-3 text-xs font-medium bg-red-700 text-white px-3 py-1 rounded-xl shadow hover:bg-red-600 cursor-pointer">
+                User Deleted
+              </span>
+            </>
+          )}
+
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-slate-200 w-24 h-24 flex items-center justify-center rounded-full text-xl font-semibold text-indigo-500">
             {firstChar}
           </div>

@@ -87,7 +87,18 @@ const Leave = () => {
                       <td>{leave.reason}</td>
 
                       <td>
-                        <span
+                        <select name="status" id="status">
+                          <option value={leave.status}>{leave.status}</option>
+                          {leave.status === "Pending" ? (
+                            <>
+                              <option value="">Approved</option>
+                              <option value="">Deleted</option>
+                            </>
+                          ) : (
+                            <option value="">Pending</option>
+                          )}
+                        </select>
+                        {/* <span
                           className={`px-3 py-1 rounded-full text-xs font-medium ${
                             leave.status === "approved"
                               ? "bg-green-100 text-green-600"
@@ -97,7 +108,7 @@ const Leave = () => {
                           }`}
                         >
                           {leave.status || "pending"}
-                        </span>
+                        </span> */}
                       </td>
                       <td className="space-x-4">
                         <button className="text-white border p-2 rounded-md border-gray-200 bg-green-600 hover:bg-green-500 transition-all duration-100 hover:scale-105">

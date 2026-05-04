@@ -14,6 +14,7 @@ const PaySlipForm = ({ onClose }) => {
       return response.data.data;
     },
   });
+
   const { register, handleSubmit } = useForm();
 
   const createPaySlip = useMutation({
@@ -32,7 +33,10 @@ const PaySlipForm = ({ onClose }) => {
     },
   });
 
+  // console.log("all data", data);
+
   const onSubmit = (data) => {
+    // console.log(data);
     createPaySlip.mutate({
       employeeId: data.employeeId,
       month: data.month,

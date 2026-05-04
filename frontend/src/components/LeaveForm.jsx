@@ -1,4 +1,4 @@
-import { useMutation  } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CalendarDays, File, X } from "lucide-react";
 import React from "react";
 import { useForm } from "react-hook-form";
@@ -9,20 +9,32 @@ const LeaveForm = ({ onClose }) => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
+  const queryClient = useQueryClient();
 
   const createLeave = useMutation({
     mutationFn: async (data) => {
       const response = await api.post("/leave", data);
+      if (response.data?.error) {
+        throw new Error(response.data.error);
+      }
       return response.data;
     },
     onSuccess: () => {
       toast.success("Leave created successfully");
-      onclose();
+      queryClient.invalidateQueries({ queryKey: ["employeeLeave"] });
+      reset({
+        leaveType: "",
+        startDate: "",
+        endDate: "",
+        reason: "",
+      });
+      onClose();
     },
-    onError: () => {
-      toast.error("Failed to create leave");
+    onError: (error) => {
+      toast.error(error.message || "Failed to update profile");
     },
   });
 
@@ -34,8 +46,6 @@ const LeaveForm = ({ onClose }) => {
       reason: data.reason,
     });
   };
-
-
 
   return (
     <div className="bg-white rounded-2xl shadow-2xl w-full max-w-lg animate-fade-in max-h-[85vh] overflow-y-auto p-6">
