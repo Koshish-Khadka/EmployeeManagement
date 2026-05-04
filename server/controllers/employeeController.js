@@ -4,9 +4,7 @@ import bcrypt from "bcryptjs";
 // Get employee
 export const getEmployee = async (req, res) => {
   try {
-    const employee = await pool.query(
-      "SELECT * FROM employees WHERE isdeleted = false",
-    );
+    const employee = await pool.query("SELECT * FROM employees");
     if (employee.rows.length === 0) {
       res.status(404).json({ message: "No employee found" });
     }
@@ -109,7 +107,20 @@ export const updateEmployee = async (req, res) => {
     }
 
     const updatedEmployee = await pool.query(
-      `UPDATE employees SET first_name = ${firstName}, last_name = ${lastName}, email = ${email}, phone = ${phone}, position = ${position}, department = ${department}, basic_salary = ${basicSalary}, allowances = ${allowances}, deductions = ${deductions}, employement_status = ${employement_status} WHERE id = ${id} RETURNING *`,
+      `UPDATE employees SET first_name = $1, last_name = $2, email = $3, phone = $4, position = $5, department = $6, basic_salary = $7, allowances = $8, deductions = $9, employement_status = $10 WHERE id = $11 RETURNING *`,
+      [
+        firstName,
+        lastName,
+        email,
+        phone,
+        position,
+        department,
+        basicSalary,
+        allowances,
+        deductions,
+        employement_status,
+        id,
+      ],
     );
 
     res.status(201).json({ status: "success", data: updatedEmployee.rows[0] });
@@ -132,7 +143,9 @@ export const deleteEmployee = async (req, res) => {
     }
 
     const deletedEmployee = await pool.query(
-      `UPDATE employees SET employment_status = ${employee.employment_status},isdeleted =${true} WHERE id = ${id} RETURNING *`,
+      `UPDATE employees SET employment_status = $1,isdeleted =$2 WHERE id = $3 RETURNING *`[
+        (employee.employment_status, true, id)
+      ],
     );
     res.status(200).json({ status: "success", data: deletedEmployee.rows[0] });
   } catch (error) {

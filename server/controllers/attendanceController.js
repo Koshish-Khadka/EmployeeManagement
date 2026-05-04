@@ -6,7 +6,8 @@ export const checkInOut = async (req, res) => {
   try {
     const userId = req.session.userId;
     const employee = await pool.query(
-      `SELECT * FROM employees WHERE userId=${userId} LIMIT 1`,
+      `SELECT * FROM employees WHERE userId=$1 LIMIT 1`,
+      [userId],
     );
     if (employee.rows.length === 0) {
       return res.status(404).json({ error: "Employee not found" });
@@ -28,14 +29,16 @@ export const getAttendance = async (req, res) => {
   try {
     const userId = req.session.userId;
     const employee = await pool.query(
-      `SELECT * FROM employees WHERE userId=${userId} LIMIT 1`,
+      `SELECT * FROM employees WHERE userId=$1 LIMIT 1`,
+      [userId],
     );
     if (employee.rows.length === 0) {
       return res.status(404).json({ error: "Employee not found" });
     }
     const limit = req.query.limit || 30;
     const attendance = await pool.query(
-      `SELECT * FROM attendance WHERE userId=${userId} ORDER BY date DESC LIMIT ${limit}`,
+      `SELECT * FROM attendance WHERE userId=$1 ORDER BY date DESC LIMIT $2`,
+      [userId, limit],
     );
     res.status(200).json({ status: "success", data: attendance.rows });
   } catch (error) {

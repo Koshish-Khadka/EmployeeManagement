@@ -75,7 +75,7 @@ export const getPayslips = async (req, res) => {
     } else {
       // Get employee using userId
       const employeeResult = await pool.query(
-        `SELECT * FROM employees WHERE userId = $1 LIMIT 1`,
+        `SELECT * FROM employees WHERE userId = $1 `,
         [userId],
       );
 
@@ -96,7 +96,6 @@ export const getPayslips = async (req, res) => {
         ...p,
         id: p.id.toString(),
       }));
-
       return res.json({ data });
     }
   } catch (error) {

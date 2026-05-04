@@ -23,9 +23,9 @@ export const updateProfile = async (req, res) => {
   try {
     const userId = req.session.userId;
     // console.log("userId", userId);
-    const result = await pool.query(
-      `SELECT * FROM employees WHERE userId=${userId}`,
-    );
+    const result = await pool.query(`SELECT * FROM employees WHERE userId=$1`, [
+      userId,
+    ]);
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Profile not found" });
     }

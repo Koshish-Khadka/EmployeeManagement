@@ -39,13 +39,7 @@ export const createLeave = async (req, res) => {
     }
 
     const employeeId = employee.rows[0].id;
-    //   const leave = await pool.query(
-    //   `INSERT INTO leaveApplications
-    //  (employeeid, leaveType, startDate, endDate, reason)
-    //  VALUES ($1, $2, $3, $4, $5)
-    //  RETURNING *`,
-    //     [userId, leaveType, startDate, endDate, reason],
-    //   );
+
     const leave = await pool.query(
       `INSERT INTO leaveapplications 
    (employeeid, leavetype, startdate, enddate, reason) 

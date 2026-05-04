@@ -6,18 +6,24 @@ import jwt from "jsonwebtoken";
 // POST api/auth/login
 export const login = async (req, res) => {
   try {
-    const { email, password, role } = req.body;
+    const { email, password, role_type } = req.body;
 
-    if (!email || !password || !role) {
+    if (!email || !password) {
       return res.status(400).json({ error: "All fields are required" });
     }
-    const result = await pool.query(
-      `SELECT * FROM users WHERE email = '${email}'`,
-    );
+    const result = await pool.query(`SELECT * FROM users WHERE email = $1`, [
+      email,
+    ]);
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "User not found" });
     }
     const user = result.rows[0];
+    if (role_type === "ADMIN" && user.role !== "ADMIN") {
+      return res.status(401).json({ error: "Not authorized as admin" });
+    }
+    if (role_type === "EMPLOYEE" && user.role !== "EMPLOYEE") {
+      return res.status(401).json({ error: "Not authorized as admin" });
+    }
     const isValidPassword = await bcrypt.compare(password, user.password);
     // const isValidPassword = password === user.password;
     if (!isValidPassword) {
