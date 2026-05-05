@@ -161,8 +161,8 @@ export const getLeave = async (req, res) => {
 // update leave status
 export const updateLeaveStatus = async (req, res) => {
   try {
-    const { status } = req.body;
-    const id = req.params.id;
+    const { id,status } = req.body;
+    // const id = req.params.id;
     if (!status) {
       return res.status(400).json({ error: "All fields are required" });
     }

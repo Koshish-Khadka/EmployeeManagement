@@ -133,19 +133,24 @@ export const updateEmployee = async (req, res) => {
 // delete employee
 export const deleteEmployee = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.body;
+    console.log("delete function");
+    console.log(req.body);
     // find employee by id
-    const employee = await pool.query(
-      `SELECT * FROM employees WHERE id = ${id}`,
-    );
+    const employee = await pool.query(`SELECT * FROM employees WHERE id = $1`, [
+      id,
+    ]);
+
     if (employee.rows.length === 0) {
       return res.status(404).json({ message: "Employee not found" });
     }
 
     const deletedEmployee = await pool.query(
-      `UPDATE employees SET employment_status = $1,isdeleted =$2 WHERE id = $3 RETURNING *`[
-        (employee.employment_status, true, id)
-      ],
+      `UPDATE employees 
+       SET employment_status = $1, isdeleted = $2 
+       WHERE id = $3 
+       RETURNING *`,
+      ["Inactive", true, id],
     );
     res.status(200).json({ status: "success", data: deletedEmployee.rows[0] });
   } catch (error) {

@@ -75,13 +75,19 @@ const Employee = () => {
         </>
       ) : (
         <div className="mt-8 flex flex-col gap-y-4 md:grid md:grid-cols-2 lg:grid-cols-4 md:gap-4">
-          {filterEmployee.map((employee, index) => {
-            return (
-              <div key={index}>
-                <UserCard employee={employee} />
-              </div>
-            );
-          })}
+          {filterEmployee.length === 0 ? (
+            <>
+              <p>No result found</p>
+            </>
+          ) : (
+            filterEmployee.map((employee, index) => {
+              return (
+                <div key={index}>
+                  <UserCard employee={employee} />
+                </div>
+              );
+            })
+          )}
         </div>
       )}
 

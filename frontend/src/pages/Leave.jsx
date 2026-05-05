@@ -1,4 +1,4 @@
-import { Plus } from "lucide-react";
+import { Plus, Trash2 } from "lucide-react";
 import React from "react";
 import { DoorOpen, FilePenLine, LogOutIcon } from "lucide-react";
 import LeaveForm from "../components/LeaveForm";
@@ -18,6 +18,19 @@ const Leave = () => {
       return response.data;
     },
   });
+
+  const handleStatusChange = async (id, status) => {
+    try {
+      const response = await api.patch("/leave", { id, status });
+      if (response.status === 200) {
+        toast.success("Status Updated");
+      } else {
+        toast.error("Failed to update status");
+      }
+    } catch (error) {
+      console.log("Failed to update status", error);
+    }
+  };
 
   if (isError) {
     return toast.error("Failed to fetch leave data. Please try again later.");
@@ -87,35 +100,39 @@ const Leave = () => {
                       <td>{leave.reason}</td>
 
                       <td>
-                        <select name="status" id="status">
-                          <option value={leave.status}>{leave.status}</option>
-                          {leave.status === "Pending" ? (
-                            <>
-                              <option value="">Approved</option>
-                              <option value="">Deleted</option>
-                            </>
-                          ) : (
-                            <option value="">Pending</option>
-                          )}
-                        </select>
-                        {/* <span
-                          className={`px-3 py-1 rounded-full text-xs font-medium ${
-                            leave.status === "approved"
-                              ? "bg-green-100 text-green-600"
-                              : leave.status === "rejected"
-                                ? "bg-red-100 text-red-600"
-                                : "bg-yellow-100 text-yellow-600"
-                          }`}
-                        >
-                          {leave.status || "pending"}
-                        </span> */}
+                        {leave.status !== "REJECTED" ? (
+                          <select
+                            value={leave.status}
+                            onChange={(e) =>
+                              handleStatusChange(leave.id, e.target.value)
+                            }
+                            className="border px-2 py-1 rounded-md text-sm"
+                          >
+                            <option value={leave.status}>{leave.status}</option>
+
+                            {leave.status === "PENDING" && (
+                              <>
+                                <option value="APPROVED">APPROVED</option>
+                                <option value="REJECTED">REJECTED</option>
+                              </>
+                            )}
+
+                            {leave.status === "APPROVED" && (
+                              <option value="REJECTED">REJECTED</option>
+                            )}
+                          </select>
+                        ) : (
+                          <span
+                            className={`px-3 py-1 rounded-full text-xs font-medium 
+                              bg-red-100 text-red-600`}
+                          >
+                            {leave.status || "pending"}
+                          </span>
+                        )}
                       </td>
-                      <td className="space-x-4">
-                        <button className="text-white border p-2 rounded-md border-gray-200 bg-green-600 hover:bg-green-500 transition-all duration-100 hover:scale-105">
-                          Edit
-                        </button>
-                        <button className="text-white border p-2 rounded-md border-gray-200 bg-red-600 hover:bg-red-500 transition-all duration-100 hover:scale-105">
-                          Delete
+                      <td>
+                        <button className="px-2 py-2 text-sm bg-white text-black rounded-lg transition-all  hover:text-red-500 hover:scale-105 duration-200 ease-in-out">
+                          <Trash2 className="w-5 h-5" />
                         </button>
                       </td>
                     </tr>
@@ -238,9 +255,9 @@ const Leave = () => {
                     <td>
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-medium ${
-                          leave.status === "approved"
+                          leave.status === "APPROVED"
                             ? "bg-green-100 text-green-600"
-                            : leave.status === "rejected"
+                            : leave.status === "REJECTED"
                               ? "bg-red-100 text-red-600"
                               : "bg-yellow-100 text-yellow-600"
                         }`}
