@@ -103,27 +103,71 @@ export const getPayslips = async (req, res) => {
     return res.status(500).json({ error: "Failed" });
   }
 };
+
 // get payslip by id
+// export const getPayslipById = async (req, res) => {
+//   try {
+//     const id = req.params.id;
+//     const result = await pool.query(
+//       `SELECT p.*, e.*
+//    FROM payslip p
+//    JOIN employees e ON p.employeeId = e.id
+//    WHERE p.employeeId = $1`,
+//       [id],
+//     );
+//     if (result.rows.length === 0) {
+//       return res.status(404).json({ error: "Employee not found" });
+//     }
+//     const payslip = {
+//       ...result,
+//       id: result.id.toString(),
+//       employee: result.employeeId,
+//     };
+//     return res.json(payslip);
+//   } catch (error) {
+//     res.status(500).json({ error: "Failed to get payslip" });
+//   }
+// };
+
 export const getPayslipById = async (req, res) => {
   try {
     const id = req.params.id;
+
     const result = await pool.query(
-      `SELECT p.*, e.* 
-   FROM payslip p
-   JOIN employees e ON p.employeeId = e.id
-   WHERE p.employeeId = $1`,
+      `
+      SELECT p.*, e.firstname, e.email, e.position
+      FROM payslip p
+      JOIN employees e ON p.employeeId = e.id
+    WHERE p.employeeId = $1
+      `,
       [id],
     );
+
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: "Employee not found" });
+      return res.status(404).json({ error: "Payslip not found" });
     }
+
+    const row = result.rows[0];
+
     const payslip = {
-      ...result,
-      id: result.id.toString(),
-      employee: result.employeeId,
+      id: row.id,
+      year: row.year,
+      month: row.month,
+      allowances:row.allowances,
+      deductions:row.deductions,
+      basicsalary: row.basicsalary,
+      netsalary: row.netsalary,
+      employee: {
+        id: row.employeeid,
+        name: row.firstname,
+        email: row.email,
+        position: row.position,
+      },
     };
+
     return res.json(payslip);
   } catch (error) {
+    console.error(error);
     res.status(500).json({ error: "Failed to get payslip" });
   }
 };

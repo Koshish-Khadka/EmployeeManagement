@@ -5,6 +5,7 @@ import PaySlipForm from "../components/PaySlipForm";
 import { useQuery } from "@tanstack/react-query";
 import api from "../axios/axios";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 const PaySlip = () => {
   const { user } = useAuth();
@@ -87,10 +88,18 @@ const PaySlip = () => {
                     <td>{data.netsalary}</td>
 
                     <td>
-                      <button className="flex items-center gap-x-2 border p-2 rounded-md border-gray-200 hover:bg-gray-100 transition-colors duration-100">
-                        <Download className="w-4 h-4" />
-                        <a href="">download</a>
-                      </button>
+                      <Link to={`/payslip/print/${data.employeeid}`}>
+                        <button
+                          // onClick={() =>
+                          //   window.open(`/payslip/print/${data.id}`, "_blank")
+                          // }
+
+                          className="flex items-center gap-x-2 border p-2 rounded-md border-gray-200 hover:bg-gray-100 transition-colors duration-100"
+                        >
+                          <Download className="w-4 h-4" />
+                          <span>Download</span>
+                        </button>
+                      </Link>
                     </td>
                   </tr>
                 ))
@@ -111,37 +120,5 @@ const PaySlip = () => {
     </>
   );
 };
-
-// return (
-//   <>
-//     <div>
-//       <h1 className="text-2xl font-medium mb-2">Payslips</h1>
-//       <p className="text-sm text-gray-600 ">Your payslip history</p>
-//     </div>
-//     {/* table */}
-//     <div className="card overflow-hidden mt-8">
-//       <div className="overflow-x-hidden">
-//         <table className="table-modern">
-//           <thead>
-//             <tr>
-//               <th>PERIOD</th>
-//               <th>BASIC SALARY</th>
-//               <th>NET SALARY</th>
-//               <th>ACTIONS</th>
-//             </tr>
-//           </thead>
-//           <tbody>
-//             <tr>
-//               <td colSpan="4" className="text-center py-12 text-slate-400">
-//                 No data found
-//               </td>
-//             </tr>
-//           </tbody>
-//         </table>
-//       </div>
-//     </div>
-//   </>
-// );
-// };
 
 export default PaySlip;

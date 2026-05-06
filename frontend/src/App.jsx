@@ -50,7 +50,7 @@ function App() {
           <Route path="/payslip" element={<PaySlip />} />
           <Route path="/setting" element={<Setting />} />
         </Route>
-        <Route path="/print/payslip/:id" element={<PrintPaySlip />} />
+        <Route path="/payslip/print/:id" element={<PrintPaySlip />} />
         <Route path="*" element={<Navigate replace to="/dashboard" />} />
       </Routes>
     </>
