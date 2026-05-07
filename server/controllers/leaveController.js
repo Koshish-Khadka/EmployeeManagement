@@ -47,12 +47,12 @@ export const createLeave = async (req, res) => {
    RETURNING *`,
       [employeeId, leaveType, startDate, endDate, reason],
     );
-    // await inngest.send({
-    //   name: "leave/pending",
-    //   data: {
-    //     leaveApplicationId: leave.rows[0].id,
-    //   },
-    // });
+    await inngest.send({
+      name: "leave/pending",
+      data: {
+        leaveApplicationId: leave.rows[0].id,
+      },
+    });
     return res.status(201).json({ status: "success", data: leave.rows[0] });
   } catch (error) {
     console.log("CREATE LEAVE ERROR:", error);

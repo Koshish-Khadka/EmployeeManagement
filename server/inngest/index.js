@@ -140,7 +140,6 @@ const leaveApplicationRemainder = inngest.createFunction(
 );
 
 // Cron check attendance at 11:30 AM and email absent employees
-
 const attendanceReminderCron = inngest.createFunction(
   {
     id: "attendance-reminder-cron",
@@ -152,7 +151,7 @@ const attendanceReminderCron = inngest.createFunction(
   },
 
   async ({ step }) => {
-    // Get today's start and end time
+    // Get today's range
     const { startOfDay, endOfDay } = await step.run(
       "get-today-range",
       async () => {
@@ -183,11 +182,11 @@ const attendanceReminderCron = inngest.createFunction(
       },
     );
 
-    // Get employees who have NOT checked in today
+    // Get absent employees
     const absentEmployees = await step.run("get-absent-employees", async () => {
       const result = await pool.query(
         `
-          SELECT *
+          SELECT id, first_name, email, department
           FROM employees e
           WHERE NOT EXISTS (
             SELECT 1
@@ -202,51 +201,71 @@ const attendanceReminderCron = inngest.createFunction(
       return result.rows;
     });
 
-    // If no absent employees
+    // If everyone is present
     if (absentEmployees.length === 0) {
       return {
         message: "All employees checked in today",
       };
     }
 
-    // Send reminder emails
-    for (const employee of absentEmployees) {
-      await step.run(`send-reminder-${employee.id}`, async () => {
-        await sendEmail({
-          to: employee.email,
+    // Send ONE email to admin
+    await step.run("send-admin-report", async () => {
+      const employeeListHtml = absentEmployees
+        .map(
+          (emp, index) => `
+            <tr>
+              <td style="padding: 8px;">${index + 1}</td>
+              <td style="padding: 8px;">${emp.first_name}</td>
+              <td style="padding: 8px;">${emp.email}</td>
+              <td style="padding: 8px;">${emp.department}</td>
+            </tr>
+          `,
+        )
+        .join("");
 
-          subject: "Attendance Reminder",
+      await sendEmail({
+        to: process.env.ADMIN_EMAIL, // IMPORTANT: admin email
 
-          body: `
-              <div style="max-width: 600px;">
-                <h2>Hi ${employee.firstName} 👋</h2>
+        subject: "Daily Attendance Report - Absent Employees",
 
-                <p style="font-size: 16px;">
-                  Our records show that you have not checked in today.
-                </p>
+        body: `
+          <div style="max-width: 700px;">
+            <h2>Hi Admin 👋</h2>
 
-                <p style="font-size: 16px;">
-                  Please make sure to mark your attendance.
-                </p>
+            <p style="font-size: 16px;">
+              The following employees have not checked in today:
+            </p>
 
-                <br />
+            <table style="width: 100%; border-collapse: collapse;">
+              <thead>
+                <tr>
+                  <th style="text-align:left;">#</th>
+                  <th style="text-align:left;">Name</th>
+                  <th style="text-align:left;">Email</th>
+                  <th style="text-align:left;">Department</th>
+                </tr>
+              </thead>
 
-                <p style="font-size: 16px;">
-                  Best Regards,
-                </p>
+              <tbody>
+                ${employeeListHtml}
+              </tbody>
+            </table>
 
-                <p style="font-size: 16px;">
-                  EMS
-                </p>
-              </div>
-            `,
-        });
+            <br />
+
+            <p style="font-size: 16px;">
+              Please review and take necessary action.
+            </p>
+
+            <p>Best Regards,<br/>EMS</p>
+          </div>
+        `,
       });
-    }
+    });
 
     return {
       success: true,
-      remindedEmployees: absentEmployees.length,
+      absentCount: absentEmployees.length,
     };
   },
 );

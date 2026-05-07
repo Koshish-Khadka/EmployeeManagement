@@ -1,6 +1,7 @@
 // check In / out employee
 
 import pool from "../config/db.js";
+import { inngest } from "../inngest/index.js";
 
 export const checkInOut = async (req, res) => {
   try {
@@ -21,8 +22,7 @@ export const checkInOut = async (req, res) => {
         .status(403)
         .json({ error: "Employee is deleted you cannot check in/out" });
     }
-    // const today = new Date(); //getting current time
-    // today.setHours(0, 0, 0, 0); // setting time to 00:00:00 for date comparison
+
     const today = new Date().toLocaleDateString("en-CA");
 
     // check for existing attendance
@@ -47,6 +47,14 @@ export const checkInOut = async (req, res) => {
      RETURNING *`,
         [employeeId, today, now, isLate ? "LATE" : "PRESENT"],
       );
+
+      await inngest.send({
+        name: "employee/check-out",
+        data: {
+          employeeId: employeeId,
+          attendanceId: attendance.rows[0].id,
+        },
+      });
 
       return res.status(200).json({
         success: true,
