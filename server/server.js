@@ -12,15 +12,23 @@ import { serve } from "inngest/express";
 import { inngest, functions } from "./inngest/index.js";
 
 dotenv.config();
-
 const app = express();
-app.use(express.json());
+
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://employeemanagement-frontend-cyan.vercel.app/",
+];
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: allowedOrigins,
     credentials: true,
   }),
 );
+
+// app.options("*", cors());
+
+app.use(express.json());
+
 app.use(express.json());
 
 const PORT = process.env.PORT || 8000;
