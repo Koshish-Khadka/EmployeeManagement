@@ -140,135 +140,140 @@ const leaveApplicationRemainder = inngest.createFunction(
 );
 
 // Cron check attendance at 11:30 AM and email absent employees
-const attendanceReminderCron = inngest.createFunction(
-  {
-    id: "attendance-reminder-cron",
-  },
+// const attendanceReminderCron = inngest.createFunction(
+//   {
+//     id: "attendance-reminder-cron",
 
-  // Runs every day at 11:30 AM Nepal Time
-  {
-    cron: "0 30 11 * * *",
-  },
+//     triggers: [
+//       {
+//         cron: "0 30 11 * * *",
+//       },
+//     ],
+//   },
 
-  async ({ step }) => {
-    // Get today's range
-    const { startOfDay, endOfDay } = await step.run(
-      "get-today-range",
-      async () => {
-        const now = new Date();
+//   async ({ step }) => {
+//     // Get today's range
+//     const { startOfDay, endOfDay } = await step.run(
+//       "get-today-range",
+//       async () => {
+//         const now = new Date();
 
-        const startOfDay = new Date(
-          now.getFullYear(),
-          now.getMonth(),
-          now.getDate(),
-          0,
-          0,
-          0,
-        );
+//         const startOfDay = new Date(
+//           now.getFullYear(),
+//           now.getMonth(),
+//           now.getDate(),
+//           0,
+//           0,
+//           0,
+//         );
 
-        const endOfDay = new Date(
-          now.getFullYear(),
-          now.getMonth(),
-          now.getDate(),
-          23,
-          59,
-          59,
-        );
+//         const endOfDay = new Date(
+//           now.getFullYear(),
+//           now.getMonth(),
+//           now.getDate(),
+//           23,
+//           59,
+//           59,
+//         );
 
-        return {
-          startOfDay: startOfDay.toISOString(),
-          endOfDay: endOfDay.toISOString(),
-        };
-      },
-    );
+//         return {
+//           startOfDay: startOfDay.toISOString(),
+//           endOfDay: endOfDay.toISOString(),
+//         };
+//       },
+//     );
 
-    // Get absent employees
-    const absentEmployees = await step.run("get-absent-employees", async () => {
-      const result = await pool.query(
-        `
-          SELECT id, first_name, email, department
-          FROM employees e
-          WHERE NOT EXISTS (
-            SELECT 1
-            FROM attendance a
-            WHERE a.employee_id = e.id
-            AND a.check_in BETWEEN $1 AND $2
-          )
-          `,
-        [startOfDay, endOfDay],
-      );
+//     // Get absent employees
+//     const absentEmployees = await step.run("get-absent-employees", async () => {
+//       const result = await pool.query(
+//         `
+//           SELECT id, first_name, email, department
+//           FROM employees e
+//           WHERE NOT EXISTS (
+//             SELECT 1
+//             FROM attendance a
+//             WHERE a.employee_id = e.id
+//             AND a.check_in BETWEEN $1 AND $2
+//           )
+//           `,
+//         [startOfDay, endOfDay],
+//       );
 
-      return result.rows;
-    });
+//       return result.rows;
+//     });
 
-    // If everyone is present
-    if (absentEmployees.length === 0) {
-      return {
-        message: "All employees checked in today",
-      };
-    }
+//     // If everyone is present
+//     if (absentEmployees.length === 0) {
+//       return {
+//         message: "All employees checked in today",
+//       };
+//     }
 
-    // Send ONE email to admin
-    await step.run("send-admin-report", async () => {
-      const employeeListHtml = absentEmployees
-        .map(
-          (emp, index) => `
-            <tr>
-              <td style="padding: 8px;">${index + 1}</td>
-              <td style="padding: 8px;">${emp.first_name}</td>
-              <td style="padding: 8px;">${emp.email}</td>
-              <td style="padding: 8px;">${emp.department}</td>
-            </tr>
-          `,
-        )
-        .join("");
+//     // Send ONE email to admin
+//     await step.run("send-admin-report", async () => {
+//       const employeeListHtml = absentEmployees
+//         .map(
+//           (emp, index) => `
+//             <tr>
+//               <td style="padding: 8px;">${index + 1}</td>
+//               <td style="padding: 8px;">${emp.first_name}</td>
+//               <td style="padding: 8px;">${emp.email}</td>
+//               <td style="padding: 8px;">${emp.department}</td>
+//             </tr>
+//           `,
+//         )
+//         .join("");
 
-      await sendEmail({
-        to: process.env.ADMIN_EMAIL, // IMPORTANT: admin email
+//       await sendEmail({
+//         to: process.env.ADMIN_EMAIL, // IMPORTANT: admin email
 
-        subject: "Daily Attendance Report - Absent Employees",
+//         subject: "Daily Attendance Report - Absent Employees",
 
-        body: `
-          <div style="max-width: 700px;">
-            <h2>Hi Admin 👋</h2>
+//         body: `
+//           <div style="max-width: 700px;">
+//             <h2>Hi Admin 👋</h2>
 
-            <p style="font-size: 16px;">
-              The following employees have not checked in today:
-            </p>
+//             <p style="font-size: 16px;">
+//               The following employees have not checked in today:
+//             </p>
 
-            <table style="width: 100%; border-collapse: collapse;">
-              <thead>
-                <tr>
-                  <th style="text-align:left;">#</th>
-                  <th style="text-align:left;">Name</th>
-                  <th style="text-align:left;">Email</th>
-                  <th style="text-align:left;">Department</th>
-                </tr>
-              </thead>
+//             <table style="width: 100%; border-collapse: collapse;">
+//               <thead>
+//                 <tr>
+//                   <th style="text-align:left;">#</th>
+//                   <th style="text-align:left;">Name</th>
+//                   <th style="text-align:left;">Email</th>
+//                   <th style="text-align:left;">Department</th>
+//                 </tr>
+//               </thead>
 
-              <tbody>
-                ${employeeListHtml}
-              </tbody>
-            </table>
+//               <tbody>
+//                 ${employeeListHtml}
+//               </tbody>
+//             </table>
 
-            <br />
+//             <br />
 
-            <p style="font-size: 16px;">
-              Please review and take necessary action.
-            </p>
+//             <p style="font-size: 16px;">
+//               Please review and take necessary action.
+//             </p>
 
-            <p>Best Regards,<br/>EMS</p>
-          </div>
-        `,
-      });
-    });
+//             <p>Best Regards,<br/>EMS</p>
+//           </div>
+//         `,
+//       });
+//     });
 
-    return {
-      success: true,
-      absentCount: absentEmployees.length,
-    };
-  },
-);
+//     return {
+//       success: true,
+//       absentCount: absentEmployees.length,
+//     };
+//   },
+// );
 
 // Create an empty array where we'll export future Inngest functions
-export const functions = [autoCheckOut, leaveApplicationRemainder];
+export const functions = [
+  autoCheckOut,
+  leaveApplicationRemainder,
+  // attendanceReminderCron
+];
