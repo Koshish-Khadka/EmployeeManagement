@@ -1,7 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:7000/api",
+  baseURL: "https://employeemanagement-server-omega.vercel.app/api",
+  // baseURL: "http://localhost:7000/api",
 });
 
 api.interceptors.request.use((config) => {
