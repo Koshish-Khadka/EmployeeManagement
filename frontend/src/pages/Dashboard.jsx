@@ -8,7 +8,7 @@ import {
   MoveRight,
   User2,
 } from "lucide-react";
-import Loading from "../components/Loading";
+import Loading from "../components/Loaders/Loading";
 import { useAuth } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 const Dashboard = () => {

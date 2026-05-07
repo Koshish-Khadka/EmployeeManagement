@@ -2,6 +2,8 @@ import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import api from "../axios/axios";
 import { useParams } from "react-router-dom";
+import Loading from "../components/Loaders/Loading";
+import toast from "react-hot-toast";
 
 const PrintPaySlip = () => {
   const { id } = useParams();
@@ -17,6 +19,12 @@ const PrintPaySlip = () => {
   const handlePrint = () => {
     window.print();
   };
+  if (isLoading) {
+    return <Loading />;
+  }
+  if (isError) {
+    toast.error("Failed to do this operation, Try again later");
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center p-6">

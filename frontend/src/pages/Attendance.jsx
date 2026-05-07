@@ -43,7 +43,7 @@ const Attendance = () => {
 
   const isCheckedIn = todayAttendance && !todayAttendance.check_out;
   const isCheckedOut = todayAttendance && todayAttendance.check_out;
-  
+
   // const today = new Date().toLocaleDateString("en-CA");
   // const todayAttendance = data?.data?.find(
   //   (item) => new Date(item.date).toLocaleDateString("en-CA") === today,
@@ -127,7 +127,7 @@ const Attendance = () => {
 
       {/* table */}
       <div className="card overflow-hidden mt-8">
-        <div className="overflow-x-hidden">
+        <div className="overflow-x-auto ">
           <table className="table-modern">
             <thead>
               <tr>

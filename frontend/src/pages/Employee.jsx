@@ -4,7 +4,7 @@ import UserCard from "../components/UserCard";
 import AddEmployee from "../components/AddEmployee";
 import { useQuery } from "@tanstack/react-query";
 import api from "../axios/axios";
-import Loading from "../components/Loading";
+import Loading from "../components/Loaders/Loading";
 import toast from "react-hot-toast";
 
 const Employee = () => {
@@ -34,7 +34,7 @@ const Employee = () => {
   return (
     <>
       {/* <div className="flex flex-col md:flex-row justify-between items-start md:items-center"> */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8 overflow-y-auto">
         {/* </div> */}
         <div>
           <h1 className="text-2xl font-medium mb-2">Employees</h1>

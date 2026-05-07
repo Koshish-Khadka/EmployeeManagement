@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import { useMutation } from "@tanstack/react-query";
 import api from "../axios/axios";
+import ButtonLoading from "./Loaders/ButtonLoading";
 
 const LoginForm = ({ role, title, subtitle }) => {
   const {
@@ -45,22 +46,12 @@ const LoginForm = ({ role, title, subtitle }) => {
     },
   });
 
-  // const onSubmit = (formData) => {
-  //   loginMutation.mutate({
-  //     email: formData.email,
-  //     password: formData.password,
-  //     role_type: role,
-  //   });
-
-  // };
   const onSubmit = (formData) => {
     const payload = {
       email: formData.email,
       password: formData.password,
       role_type: role,
     };
-
-    console.log("FRONTEND PAYLOAD:", payload); // 👈 check this
 
     loginMutation.mutate(payload);
   };
@@ -124,9 +115,9 @@ const LoginForm = ({ role, title, subtitle }) => {
             </div>
             <button
               type="submit"
-              className="border p-2 w-full rounded-xl bg-blue-600 text-white hover:bg-blue-800 transition-colors "
+              className="border p-3 w-full rounded-xl bg-blue-600 text-white hover:bg-blue-800 transition-colors "
             >
-              {loginMutation.isPending ? "Logging in..." : "Login"}
+              {loginMutation.isPending ? <ButtonLoading /> : "Login"}
             </button>
           </form>
         </div>

@@ -45,7 +45,7 @@ const PaySlip = () => {
       </div>
       {/* table */}
       <div className="card overflow-hidden mt-8">
-        <div className="overflow-x-hidden">
+        <div className="overflow-x-auto">
           <table className="table-modern">
             <thead>
               <tr>

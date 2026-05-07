@@ -2,7 +2,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import LoginLeftBanner from "../components/LoginLeftBanner";
 import { MoveRight } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
-import Loading from "../components/Loading";
+import Loading from "../components/Loaders/Loading";
 
 const LoginLanding = () => {
   const naviagate = useNavigate();

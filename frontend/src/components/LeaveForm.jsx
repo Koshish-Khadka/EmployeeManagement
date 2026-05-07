@@ -168,6 +168,7 @@ const LeaveForm = ({ onClose }) => {
             onClick={handleSubmit(onSubmit)}
             className="flex justify-center items-center gap-x-3 border w-full py-2 mt-5 rounded-lg bg-blue-700 text-white  hover:bg-blue-800 transition-all duration-150 md:px-4"
           >
+            {}
             Submit
           </button>
         </div>

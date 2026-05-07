@@ -49,7 +49,7 @@ const Leave = () => {
         </div>
         {/* Table */}
         <div className="card overflow-hidden mt-8">
-          <div className="overflow-x-hidden">
+          <div className="overflow-x-auto">
             <table className="table-modern">
               <thead>
                 <tr>
@@ -89,7 +89,7 @@ const Leave = () => {
                 ) : (
                   data?.data?.map((leave) => (
                     <tr key={leave.id}>
-                      <td>{leave.employee.name}</td>
+                      <td>{leave.employee?.name}</td>
 
                       <td>{leave.leavetype}</td>
                       <td>

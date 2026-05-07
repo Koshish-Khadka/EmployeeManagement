@@ -4,7 +4,7 @@ import api from "../axios/axios";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { useForm } from "react-hook-form";
-import Loading from "./Loading";
+import Loading from "./Loaders/Loading";
 
 const PaySlipForm = ({ onClose }) => {
   const { data, isError, isLoading } = useQuery({
