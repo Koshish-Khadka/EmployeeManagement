@@ -16,7 +16,7 @@ const app = express();
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://employeemanagement-frontend-cyan.vercel.app/",
+  "https://employeemanagement-frontend-cyan.vercel.app",
 ];
 app.use(
   cors({
@@ -26,8 +26,6 @@ app.use(
 );
 
 // app.options("*", cors());
-
-app.use(express.json());
 
 app.use(express.json());
 
