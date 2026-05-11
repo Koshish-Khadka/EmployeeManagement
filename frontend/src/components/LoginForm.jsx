@@ -33,7 +33,6 @@ const LoginForm = ({ role, title, subtitle }) => {
       return response.data;
     },
     onSuccess: (data) => {
-      console.log("SUCCESS", data);
       localStorage.setItem("token", data.token);
       setToken(data.token);
       setUser(data.user);
@@ -84,6 +83,11 @@ const LoginForm = ({ role, title, subtitle }) => {
               <input
                 type="email"
                 id="email"
+                defaultValue={
+                  role === "ADMIN"
+                    ? "koshish321@gmail.com"
+                    : "koshish364@gmail.com"
+                }
                 {...register("email", { required: "Email is required" })}
                 placeholder="hari123@gmail.com"
                 className="w-full px-4 py-3 rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -97,6 +101,7 @@ const LoginForm = ({ role, title, subtitle }) => {
             <div>
               <label
                 htmlFor="password"
+                defaultValue={role === "ADMIN" ? "koshish123" : "koshish1234"}
                 className="block text-sm font-medium text-slate-700 mb-2"
               >
                 Password
