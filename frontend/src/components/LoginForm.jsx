@@ -107,7 +107,7 @@ const LoginForm = ({ role, title, subtitle }) => {
                 Password
               </label>
               <input
-                type="password"
+                // type="password"
                 id="password"
                 {...register("password", { required: "Password is required" })}
                 className="w-full px-4 py-3 rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
