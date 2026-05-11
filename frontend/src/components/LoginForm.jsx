@@ -54,6 +54,15 @@ const LoginForm = ({ role, title, subtitle }) => {
 
     loginMutation.mutate(payload);
   };
+
+  const adminLogin = {
+    email: "koshish321@gmail.com",
+    password: "koshish123",
+  };
+  const employeeLogin = {
+    email: "koshish364@gmail.com",
+    password: "koshish1234",
+  };
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       <LoginLeftBanner />
@@ -83,10 +92,8 @@ const LoginForm = ({ role, title, subtitle }) => {
               <input
                 type="email"
                 id="email"
-                defaultValue={
-                  role === "ADMIN"
-                    ? "koshish321@gmail.com"
-                    : "koshish364@gmail.com"
+                value={
+                  role === "ADMIN" ? adminLogin.email : employeeLogin.email
                 }
                 {...register("email", { required: "Email is required" })}
                 placeholder="hari123@gmail.com"
@@ -101,14 +108,18 @@ const LoginForm = ({ role, title, subtitle }) => {
             <div>
               <label
                 htmlFor="password"
-                defaultValue={role === "ADMIN" ? "koshish123" : "koshish1234"}
                 className="block text-sm font-medium text-slate-700 mb-2"
               >
                 Password
               </label>
               <input
-                // type="password"
+                type="password"
                 id="password"
+                value={
+                  role === "ADMIN"
+                    ? adminLogin.password
+                    : employeeLogin.password
+                }
                 {...register("password", { required: "Password is required" })}
                 className="w-full px-4 py-3 rounded-md border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               />
